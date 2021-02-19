@@ -241,6 +241,10 @@ export class Peer extends EventEmitter {
         this._cleanupPeer(peerId);
         this._connections.delete(peerId);
         break;
+      case ServerMessageType.System:
+        logger.log("Received system message from", peerId);
+	    this.emit(PeerEventType.System, message);	
+	break;
       case ServerMessageType.Expire: // The offer sent to a peer has expired without response.
         this.emitError(
           PeerErrorType.PeerUnavailable,

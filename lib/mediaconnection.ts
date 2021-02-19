@@ -58,6 +58,7 @@ export class MediaConnection extends BaseConnection {
         // Forward to negotiator
         this._negotiator.handleSDP(type, payload.sdp);
         this._open = true;
+        super.emit(ConnectionEventType.Open, this);
         break;
       case ServerMessageType.Candidate:
         this._negotiator.handleCandidate(payload.candidate);
@@ -91,6 +92,7 @@ export class MediaConnection extends BaseConnection {
     }
 
     this._open = true;
+    super.emit(ConnectionEventType.Open, this);
   }
 
   /**

@@ -80,7 +80,27 @@ export class Negotiator {
         dst: peerId
       });
     };
-
+peerConnection.onconnectionstatechange = ()=> {
+  switch(peerConnection.connectionState) {
+    case "connected":
+      // The connection has become fully connected
+      break;
+    case "failed":
+          this.connection.emit(
+            ConnectionEventType.Error,
+            new Error("State of connection to " + peerId + " failed.")
+          );
+          this.connection.close();
+    case "closed":
+        this.connection.emit(
+            ConnectionEventType.Close,
+            new Error("State of connection to " + peerId + " failed.")
+          );
+          this.connection.close();
+      // The connection has been closed
+      break;
+  }
+}	;
     peerConnection.oniceconnectionstatechange = () => {
       switch (peerConnection.iceConnectionState) {
         case "failed":
@@ -110,12 +130,13 @@ export class Negotiator {
             "iceConnectionState is disconnected, closing connections to " +
             peerId
           );
+		/*
           this.connection.emit(
             ConnectionEventType.Error,
             new Error("Connection to " + peerId + " disconnected.")
           );
           this.connection.close();
-          break;
+        */  break;
         case "completed":
           peerConnection.onicecandidate = util.noop;
           break;
@@ -168,8 +189,9 @@ export class Negotiator {
     this.connection.peerConnection = null;
 
     //unsubscribe from all PeerConnection's events
-    peerConnection.onicecandidate = peerConnection.oniceconnectionstatechange = peerConnection.ondatachannel = peerConnection.ontrack = () => { };
-
+    //peerConnection.onicecandidate = peerConnection.oniceconnectionstatechange = peerConnection.ondatachannel = peerConnection.ontrack = () => { };
+    peerConnection.onicecandidate = peerConnection.oniceconnectionstatechange = peerConnection.ondatachannel = peerConnection.ontrack = peerConnection.onconnectionstatechange =  () => { };
+    //peerConnection.onconnectionstatechange = peerConnection.onicegatheringstatechange = null;
     const peerConnectionNotClosed = peerConnection.signalingState !== "closed";
     let dataChannelNotClosed = false;
 

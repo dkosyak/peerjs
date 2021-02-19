@@ -78,7 +78,7 @@ export const util = new class {
   // Ensure alphanumeric ids
   validateId(id: string): boolean {
     // Allow empty ids
-    return !id || /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.test(id);
+    return !id || /^[A-Za-z0-9]+(?:[. _-][A-Za-z0-9]+)*$/.test(id);
   }
 
   pack = BinaryPack.pack;
